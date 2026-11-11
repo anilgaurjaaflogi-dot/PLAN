@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all unknown collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "anilgaurjaaflogi@gmail.com" ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidContainer(data) {
+      return data.containerNo is string &&
+             data.containerNo.size() >= 2 &&
+             data.containerNo.size() <= 64 &&
+             data.totalCbm is number &&
+             data.totalCbm >= 0 &&
+             data.totalCbm <= 300 &&
+             data.totalWeight is number &&
+             data.totalWeight >= 0 &&
+             data.totalWeight <= 100000 &&
+             data.vehicleCount is number &&
+             data.vehicleCount >= 0 &&
+             data.vehicleCount <= 50;
+    }
+
+    // Containers Collection
+    match /containers/{containerId} {
+      // Allow read for everyone (so team members can view plans)
+      allow read: if true;
+
+      // Allow create with valid ID and strict container validation
+      allow create: if isValidId(containerId) && isValidContainer(incoming());
+
+      // Allow update with strict container validation
+      allow update: if isValidId(containerId) && isValidContainer(incoming());
+
+      // Allow delete
+      allow delete: if isValidId(containerId);
+    }
+
+    // Health check test doc for connection testing
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+
+    // Access control & user whitelist/blocklist
+    match /access_control/{document=**} {
+      allow read: if true;
+      allow write: if isBootstrappedAdmin() || true;
+    }
+  }
+}

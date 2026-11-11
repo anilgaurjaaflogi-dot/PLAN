@@ -1,0 +1,8 @@
+{
+  "name": "Container Plan Manager",
+  "description": "High-performance shipping container vehicle loading planner and historical archive for Japanese used-vehicle export business.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "entities": {
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Represents an individual vehicle loaded inside a shipping container.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the vehicle."
+        },
+        "serialNo": {
+          "type": "number",
+          "description": "Sequence number inside the container (1 to 4+)."
+        },
+        "make": {
+          "type": "string",
+          "description": "Manufacturer make (e.g. TOYOTA, ISUZU, MITSUBISHI)."
+        },
+        "model": {
+          "type": "string",
+          "description": "Vehicle model name (e.g. HIACE, ELF, CANTER, WISH)."
+        },
+        "engineCC": {
+          "type": "number",
+          "description": "Engine displacement in CC."
+        },
+        "fuel": {
+          "type": "string",
+          "description": "Fuel classification (D=Diesel, G=Petrol, H=Hybrid, E=EV)."
+        },
+        "year": {
+          "type": "number",
+          "description": "Model manufacture year."
+        },
+        "vehicleIdNo": {
+          "type": "string",
+          "description": "16-digit or alphanumeric unique vehicle identification number."
+        },
+        "chassisNo": {
+          "type": "string",
+          "description": "Full chassis number (e.g. FE315BD-445529, NPR58P7106494)."
+        },
+        "chassisPrefix": {
+          "type": "string",
+          "description": "Extracted chassis code prefix (e.g. FE315BD, NPR58P, KDH206)."
+        },
+        "length": {
+          "type": "number",
+          "description": "Vehicle length in centimeters."
+        },
+        "width": {
+          "type": "number",
+          "description": "Vehicle width in centimeters."
+        },
+        "height": {
+          "type": "number",
+          "description": "Vehicle height in centimeters."
+        },
+        "qty": {
+          "type": "number",
+          "description": "Quantity of vehicles (default 1)."
+        },
+        "price": {
+          "type": "number",
+          "description": "Vehicle price in Japanese Yen (JPY)."
+        },
+        "weight": {
+          "type": "number",
+          "description": "Vehicle weight in kilograms."
+        },
+        "cbm": {
+          "type": "number",
+          "description": "Volume measurement in cubic meters (CBM)."
+        }
+      },
+      "required": ["make", "model", "chassisNo", "length", "width", "height", "cbm"]
+    },
+    "Container": {
+      "title": "Container",
+      "description": "Represents a 40HC/40GP/20GP shipping container vehicle loading plan.",
+      "type": "object",
+      "properties": {
+        "containerNo": {
+          "type": "string",
+          "description": "Container ISO number (e.g. MSKU0113466)."
+        },
+        "sealOrBlNo": {
+          "type": "string",
+          "description": "Customs Seal or Bill of Lading identifier (e.g. ML-JP0409806)."
+        },
+        "extraValue": {
+          "type": "string",
+          "description": "Container extra tare or payload adjustment weight."
+        },
+        "totalCbm": {
+          "type": "number",
+          "description": "Sum of vehicle CBMs inside the container."
+        },
+        "totalWeight": {
+          "type": "number",
+          "description": "Total vehicle payload weight in kg."
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "Total invoice value of loaded vehicles in JPY."
+        },
+        "vehicleCount": {
+          "type": "number",
+          "description": "Total vehicle units in container."
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Timestamp when the container plan was registered."
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Timestamp of the last update."
+        }
+      },
+      "required": ["containerNo", "totalCbm", "totalWeight", "vehicleCount"]
+    }
+  },
+  "firestore": {
+    "/containers/{containerId}": {
+      "schema": {
+        "$ref": "#/entities/Container"
+      },
+      "description": "Collection of container loading plans for Japanese vehicle export."
+    }
+  }
+}
